@@ -1,0 +1,6 @@
+[run]
+ include =
+    library-name/*
+ [report]
+ include =
+    library-name/*
