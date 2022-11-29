@@ -1,0 +1,2 @@
+None
+{'allow_redirects': True, 'data': {'client_id': 'mock-client-id', 'client_secret': 'mock-client-secret', 'grant_type': 'authorization_code', 'code': 'mock-auth-code', 'redirect_uri': 'http://mock-redirect-uri'}}
