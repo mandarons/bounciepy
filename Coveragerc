@@ -1,6 +1,6 @@
 [run]
  include =
-    library-name/*
+    bounciepy/*
  [report]
  include =
-    library-name/*
+    bounciepy/*

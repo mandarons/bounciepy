@@ -136,3 +136,4 @@ allure-report
 ignore-config.yaml
 gh-pages
 *.pub
+.env.json

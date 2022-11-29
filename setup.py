@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from codecs import open
 
-REPO_URL = "https://github.com/mandarons/library-name"
+REPO_URL = "https://github.com/mandarons/bounciepy"
 VERSION = "0.3.1"
 
 with open("README.md", "r") as fh:
@@ -10,7 +10,7 @@ with open("requirements.txt", "r") as fh:
     required = fh.read().splitlines()
 
 setup(
-    name="library-name",
+    name="bounciepy",
     version=VERSION,
     author="Mandar Patil",
     author_email="mandarons@pm.me",
@@ -30,6 +30,6 @@ setup(
     # TODO remove if there is no entry point
     entry_points="""
     [console_scripts]
-    icloud=library-name.cmdline:main
+    icloud=bounciepy.cmdline:main
     """,
 )

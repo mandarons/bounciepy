@@ -7,7 +7,7 @@ on:
   push:
     branches: [main]
     paths:
-      - library-name/**
+      - bounciepy/**
       - tests/**
       - pylintrc
       - pytest.ini
@@ -59,7 +59,7 @@ jobs:
           pip install -r requirements-test.txt
       - name: Test with pytest
         run: |
-          pylint library-name/ tests/ && pytest
+          pylint bounciepy/ tests/ && pytest
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v2
         if: ${{ success() }}

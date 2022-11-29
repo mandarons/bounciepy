@@ -11,12 +11,12 @@ deleteDir allure-report
 deleteDir htmlcov
 deleteDir build
 deleteDir dist
-deleteDir library-name.egg-info
+deleteDir bounciepy.egg-info
 deleteFile .coverage
 deleteFile coverage.xml
 
 echo "Linting ..." &&
-    pylint library-name/ tests/ &&
+    pylint bounciepy/ tests/ &&
     echo "Testing ..." &&
     pytest &&
     echo "Reporting ..." &&
