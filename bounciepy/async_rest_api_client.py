@@ -41,52 +41,12 @@ class AsyncRESTAPIClient:
         self._headers: dict = {}
 
     @property
-    def client_id(self):
-        return self._client_id
-
-    @property
-    def client_secret(self):
-        return self._client_secret
-
-    @property
-    def redirect_url(self):
-        return self._redirect_url
-
-    @property
-    def auth_code(self):
-        return self._auth_code
-
-    @property
-    def state(self):
-        return self._state
-
-    @property
     def client_session(self):
         return self._session
 
     @property
     def access_token(self):
         return self._access_token
-
-    @property
-    def access_token_valid(self):
-        return self._access_token_valid
-
-    @property
-    def user_email(self):
-        return self._user_email
-
-    @property
-    def user_name(self):
-        return self._user_name
-
-    @property
-    def user_id(self):
-        return self._user_id
-
-    @property
-    def vehicles_list(self):
-        return self._vehicles
 
     def _set_access_token(self, access_token):
         self._access_token = access_token
@@ -141,7 +101,7 @@ class AsyncRESTAPIClient:
             headers=self._headers,
         ) as response:
             data = await self._handle_response(response=response)
-            user_data = data[0]
+            user_data = data
             self._user_name = user_data["name"] if "name" in user_data else None
             self._user_email = user_data["email"] if "email" in user_data else None
             self._user_id = user_data["id"] if "id" in user_data else None
@@ -176,3 +136,15 @@ class AsyncRESTAPIClient:
         ) as response:
             vehicle_data = await self._handle_response(response=response)
             return vehicle_data[0]
+
+    async def search_for_trips(
+        self, imei, gps_format, transaction_id=None, starts_after=None, ends_before=None
+    ):
+        current_session = await self._get_session()
+        params = {"imei": imei, "gps-format": gps_format}
+        # TODO use transaction_id, starts_after and ends_before params
+        async with current_session.get(
+            url=f"{REST_API_BASE_URL}/trips", params=params, headers=self._headers
+        ) as response:
+            trip_data = await self._handle_response(response=response)
+            return trip_data

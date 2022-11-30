@@ -20,7 +20,11 @@ echo "Linting ..." &&
     echo "Testing ..." &&
     pytest &&
     echo "Reporting ..." &&
-    allure generate --clean &&
+    allure generate --clean
+if [[ ! -n $1 ]]; then
     echo "Building the distribution ..." &&
-    python setup.py sdist bdist_wheel &&
-    echo "Done."
+        python setup.py sdist bdist_wheel
+else
+    echo "Distribution build skipped."
+fi
+echo "Done."

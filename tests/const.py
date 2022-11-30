@@ -9,9 +9,12 @@ MOCK_AUTH_RESPONSE = {
     "token_type": "Bearer",
     "expires_in": 3600,
 }
-MOCK_USER_RESPONSE = [
-    {"email": "user@email.com", "name": "John Doe", "id": "5ed95be16e8444001bc97a1f"}
-]
+MOCK_USER_RESPONSE = {
+    "email": "user@email.com",
+    "name": "John Doe",
+    "id": "5ed95be16e8444001bc97a1f",
+}
+
 MOCK_TRIPS_RESPONSE_IMEI = [
     {
         "transactionId": "353762078072777-123-1590670937000",
