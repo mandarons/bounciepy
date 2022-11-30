@@ -1,0 +1,6 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Wed Nov 30 14:01:12 GMT 2022","Wed Nov 30 14:01:12 GMT 2022","4","tests","test_async_rest_api_client","","","","test_get_vehicles_by_vin",""
+"passed","Wed Nov 30 14:01:12 GMT 2022","Wed Nov 30 14:01:12 GMT 2022","4","tests","test_async_rest_api_client","","","","test_get_vehicles_by_imei",""
+"passed","Wed Nov 30 14:01:12 GMT 2022","Wed Nov 30 14:01:12 GMT 2022","5","tests","test_async_rest_api_client","","","","test_get_all_vehicles",""
+"passed","Wed Nov 30 14:01:12 GMT 2022","Wed Nov 30 14:01:12 GMT 2022","5","tests","test_async_rest_api_client","","","","test_get_user",""
+"passed","Wed Nov 30 14:01:12 GMT 2022","Wed Nov 30 14:01:12 GMT 2022","5","tests","test_async_rest_api_client","","","","test_get_access_token",""
