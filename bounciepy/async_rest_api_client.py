@@ -1,17 +1,18 @@
 from aiohttp import ClientSession, ClientTimeout
 from typing import Optional
-from bounciepy.exceptions import (
-    BadRequestError,
-    InternalError,
-    NotFoundError,
-    UnauthorizedError,
-    ForbiddenError,
-)
+
 from bounciepy.const import (
     REST_API_BASE_URL,
     AUTH_TOKEN_URL,
     AUTH_GRANT_TYPE,
     API_DEFAULT_TIMEOUT_SECONDS,
+)
+from bounciepy.exceptions import (
+    InternalError,
+    NotFoundError,
+    ForbiddenError,
+    BadRequestError,
+    UnauthorizedError,
 )
 
 
@@ -37,72 +38,90 @@ class AsyncRESTAPIClient:
         self._user_name: str = None
         self._user_id: str = None
         self._vehicles: list = []
+        self._headers: dict = {}
+
+    @property
+    def client_id(self):
+        return self._client_id
+
+    @property
+    def client_secret(self):
+        return self._client_secret
+
+    @property
+    def redirect_url(self):
+        return self._redirect_url
+
+    @property
+    def auth_code(self):
+        return self._auth_code
+
+    @property
+    def state(self):
+        return self._state
+
+    @property
+    def client_session(self):
+        return self._session
+
+    @property
+    def access_token(self):
+        return self._access_token
+
+    @property
+    def access_token_valid(self):
+        return self._access_token_valid
+
+    @property
+    def user_email(self):
+        return self._user_email
+
+    @property
+    def user_name(self):
+        return self._user_name
+
+    @property
+    def user_id(self):
+        return self._user_id
+
+    @property
+    def vehicles_list(self):
+        return self._vehicles
+
+    def _set_access_token(self, access_token):
+        self._access_token = access_token
+        self._headers = {"Authorization": access_token}
+        self._access_token_valid = True
 
     async def _handle_response(self, response):
+        data = None
         if response.status in (200, 201):
             data = await response.json()
         elif response.status == 400:
             raise BadRequestError(response.json()["errors"])
         elif response.status == 401:
-            raise UnauthorizedError()
+            self._access_token_valid = False
+            raise UnauthorizedError("Error: Invalid or expired access token.")
         elif response.status == 403:
             data = response.json()
             raise ForbiddenError(f"{data['error']} - {data['error_description']}")
         elif response.status == 404:
-            raise NotFoundError()
+            raise NotFoundError("Error: resource not found.")
         else:
-            raise InternalError(response=response)
+            raise InternalError(response.text())
         return data
 
-    async def _post(
-        self, endpoint: str, data: dict, base_url: str = REST_API_BASE_URL
-    ) -> list:
-        current_session = self._session and not self._session.closed
-
-        session: ClientSession = None
-        if current_session:
-            session = self._session
-        else:
-            session = ClientSession(
+    async def _get_session(self):
+        if not self._session or self._session.closed:
+            self._session = ClientSession(
                 timeout=ClientTimeout(total=API_DEFAULT_TIMEOUT_SECONDS)
             )
-
-        try:
-            async with session.post(f"{base_url}/{endpoint}", data=data) as response:
-                data = await self._handle_response(response=response)
-        except UnauthorizedError:
-            self.get_access_token()
-            self._post(base_url=base_url, endpoint=endpoint, data=data)
-        finally:
-            if not current_session:
-                await session.close()
-        return data
-
-    async def _get(self, base_url: str, endpoint: str, **kwargs) -> list:
-        current_session = self._session and not self._session.closed
-        session: ClientSession = None
-        data = None
-        if current_session:
-            session = self._session
-        else:
-            session = ClientSession(
-                timeout=ClientTimeout(total=API_DEFAULT_TIMEOUT_SECONDS)
-            )
-        try:
-            async with session.get(f"{base_url}/{endpoint}", **kwargs) as response:
-                data = await self._handle_response(response=response)
-        except UnauthorizedError:
-            self.get_access_token()
-            self._get(base_url=base_url, endpoint=endpoint, **kwargs)
-        finally:
-            if not current_session:
-                await session.close()
-        return data
+        return self._session
 
     async def get_access_token(self):
-        data = await self._post(
-            endpoint="",
-            base_url=AUTH_TOKEN_URL,
+        current_session = await self._get_session()
+        async with current_session.post(
+            url=AUTH_TOKEN_URL,
             data={
                 "client_id": self._client_id,
                 "client_secret": self._client_secret,
@@ -110,42 +129,50 @@ class AsyncRESTAPIClient:
                 "code": self._auth_code,
                 "redirect_uri": self._redirect_url,
             },
-        )
-        self._access_token = data["access_token"]
-        self._access_token_valid = True
-        return data["access_token"]
-
-    async def search_for_trips(
-        self,
-        imei: str,
-        gps_format: str,
-        transaction_id: str = None,
-        starts_after=None,
-        ends_before=None,
-    ):
-        pass
+        ) as response:
+            data = await self._handle_response(response=response)
+            self._set_access_token(access_token=data["access_token"])
+        return True
 
     async def get_user(self):
-        data = await self._get(base_url=REST_API_BASE_URL, endpoint="user")
-        self._user_name = data["name"] if "name" in data else None
-        self._user_email = data["email"] if "email" in data else None
-        self._user_id = data["id"] if "id" in data else None
-        return data
+        current_session = await self._get_session()
+        async with current_session.get(
+            url=f"{REST_API_BASE_URL}/user",
+            headers=self._headers,
+        ) as response:
+            data = await self._handle_response(response=response)
+            user_data = data[0]
+            self._user_name = user_data["name"] if "name" in user_data else None
+            self._user_email = user_data["email"] if "email" in user_data else None
+            self._user_id = user_data["id"] if "id" in user_data else None
+        return user_data
 
     async def get_all_vehicles(self):
-        data = await self._get(base_url=REST_API_BASE_URL, endpoint="vehicles")
-        self._vehicles = data
-        return data
+        current_session = await self._get_session()
+        async with current_session.get(
+            url=f"{REST_API_BASE_URL}/vehicles",
+            headers=self._headers,
+        ) as response:
+            vehicles_data = await self._handle_response(response=response)
+            self._vehicles = vehicles_data
+        return vehicles_data
 
-    async def get_vehicles(self, imei: str = None, vin: str = None):
-        params = {}
-        if vin:
-            params["vin"] = vin
-        elif imei:
-            params["imei"] = imei
-        else:
-            return await self.get_all_vehicles()
-        data = await self._get(
-            base_url=REST_API_BASE_URL, endpoint="vehicles", params=params
-        )
-        return data
+    async def get_vehicle_by_imei(self, imei):
+        current_session = await self._get_session()
+        async with current_session.get(
+            url=f"{REST_API_BASE_URL}/vehicles",
+            params={"imei": imei},
+            headers=self._headers,
+        ) as response:
+            vehicle_data = await self._handle_response(response=response)
+            return vehicle_data[0]
+
+    async def get_vehicle_by_vin(self, vin):
+        current_session = await self._get_session()
+        async with current_session.get(
+            url=f"{REST_API_BASE_URL}/vehicles",
+            params={"vin": vin},
+            headers=self._headers,
+        ) as response:
+            vehicle_data = await self._handle_response(response=response)
+            return vehicle_data[0]

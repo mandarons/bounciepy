@@ -29,7 +29,6 @@ MOCK_TRIPS_RESPONSE_IMEI = [
         "timeZone": "-0500",
     }
 ]
-
 MOCK_VEHICLES_RESPONSE = [
     {
         "model": {"make": "TOYOTA", "name": "PRIUS", "year": 2007},
@@ -53,7 +52,6 @@ MOCK_VEHICLES_RESPONSE = [
         },
     }
 ]
-
 MOCK_VEHICLES_IMEI_RESPONSE = [
     {
         "model": {"make": "TOYOTA", "name": "PRIUS", "year": 2007},

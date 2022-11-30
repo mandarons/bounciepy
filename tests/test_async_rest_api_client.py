@@ -21,43 +21,35 @@ def get_client():
 
 
 @pytest.mark.asyncio
-async def test_get_access_token(mock_bouncie_api):
-    print(mock_bouncie_api)
-    client = get_client()
+async def test_get_access_token(client):
     data = await client.get_access_token()
-    assert data == MOCK_ACCESS_TOKEN
+    assert data is True
+    assert client.access_token == MOCK_ACCESS_TOKEN
 
 
 @pytest.mark.asyncio
-async def test_get_user(mock_bouncie_api):
-    client = get_client()
+async def test_get_user(client):
+    assert True is await client.get_access_token()
     data = await client.get_user()
-    assert data[0]["id"] == MOCK_USER_RESPONSE[0]["id"]
+    assert data["id"] == MOCK_USER_RESPONSE[0]["id"]
 
 
 @pytest.mark.asyncio
-async def test_get_all_vehicles(mock_bouncie_api):
-    client = get_client()
+async def test_get_all_vehicles(client):
+    assert True is await client.get_access_token()
     data = await client.get_all_vehicles()
     assert len(data) > 0
 
 
 @pytest.mark.asyncio
-async def test_get_vehicles_by_imei(mock_bouncie_api):
-    client = get_client()
-    data = await client.get_vehicles(imei=MOCK_VEHICLES_RESPONSE[0]["imei"])
+async def test_get_vehicles_by_imei(client):
+    assert True is await client.get_access_token()
+    data = await client.get_vehicle_by_imei(imei=MOCK_VEHICLES_RESPONSE[0]["imei"])
     assert len(data) > 0
 
 
 @pytest.mark.asyncio
-async def test_get_vehicles_by_vin(mock_bouncie_api):
-    client = get_client()
-    data = await client.get_vehicles(vin=MOCK_VEHICLES_RESPONSE[0]["vin"])
-    assert len(data) > 0
-
-
-@pytest.mark.asyncio
-async def test_get_vehicles(mock_bouncie_api):
-    client = get_client()
-    data = await client.get_vehicles()
+async def test_get_vehicles_by_vin(client):
+    assert True is await client.get_access_token()
+    data = await client.get_vehicle_by_vin(vin=MOCK_VEHICLES_RESPONSE[0]["vin"])
     assert len(data) > 0
