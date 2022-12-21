@@ -85,57 +85,51 @@ class AsyncRESTAPIClient:
             self._set_access_token(access_token=data["access_token"])
         return True
 
+    async def http_get(self, url, **kwargs):
+        count = 0
+        while count < 2:
+            try:
+                current_session = await self._get_session()
+                response = await current_session.get(
+                    url=url, headers=self._headers, **kwargs
+                )
+                data = await self._handle_response(response=response)
+                count = 2
+            except UnauthorizedError:
+                if await self.get_access_token():
+                    count = 1
+        return data
+
     async def get_user(self):
-        current_session = await self._get_session()
-        async with current_session.get(
-            url=f"{REST_API_BASE_URL}/user",
-            headers=self._headers,
-        ) as response:
-            data = await self._handle_response(response=response)
-            user_data = data
-            self._user_name = user_data["name"] if "name" in user_data else None
-            self._user_email = user_data["email"] if "email" in user_data else None
-            self._user_id = user_data["id"] if "id" in user_data else None
+        user_data = await self.http_get(f"{REST_API_BASE_URL}/user")
+        self._user_name = user_data["name"] if "name" in user_data else None
+        self._user_email = user_data["email"] if "email" in user_data else None
+        self._user_id = user_data["id"] if "id" in user_data else None
         return user_data
 
     async def get_all_vehicles(self):
-        current_session = await self._get_session()
-        async with current_session.get(
-            url=f"{REST_API_BASE_URL}/vehicles",
-            headers=self._headers,
-        ) as response:
-            vehicles_data = await self._handle_response(response=response)
-            self._vehicles = vehicles_data
+        vehicles_data = await self.http_get(f"{REST_API_BASE_URL}/vehicles")
+        self._vehicles = vehicles_data
         return vehicles_data
 
     async def get_vehicle_by_imei(self, imei):
-        current_session = await self._get_session()
-        async with current_session.get(
-            url=f"{REST_API_BASE_URL}/vehicles",
+        vehicle_data = await self.http_get(
+            f"{REST_API_BASE_URL}/vehicles",
             params={"imei": imei},
-            headers=self._headers,
-        ) as response:
-            vehicle_data = await self._handle_response(response=response)
-            return vehicle_data[0]
+        )
+        return vehicle_data[0]
 
     async def get_vehicle_by_vin(self, vin):
-        current_session = await self._get_session()
-        async with current_session.get(
+        vehicle_data = await self.http_get(
             url=f"{REST_API_BASE_URL}/vehicles",
             params={"vin": vin},
-            headers=self._headers,
-        ) as response:
-            vehicle_data = await self._handle_response(response=response)
-            return vehicle_data[0]
+        )
+        return vehicle_data[0]
 
     async def search_for_trips(
         self, imei, gps_format, transaction_id=None, starts_after=None, ends_before=None
     ):
-        current_session = await self._get_session()
         params = {"imei": imei, "gps-format": gps_format}
         # TODO use transaction_id, starts_after and ends_before params
-        async with current_session.get(
-            url=f"{REST_API_BASE_URL}/trips", params=params, headers=self._headers
-        ) as response:
-            trip_data = await self._handle_response(response=response)
-            return trip_data
+        trip_data = await self.http_get(f"{REST_API_BASE_URL}/trips", params=params)
+        return trip_data

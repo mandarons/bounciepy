@@ -10,6 +10,12 @@
             "request": "attach",
             "processId": "${command:pickProcess}",
             "justMyCode": true,
-        }
+        },
+        {
+            "name": "Debug Unit Test",
+            "type": "python",
+            "request": "test",
+            "justMyCode": false,
+        },
     ]
 }
