@@ -15,14 +15,13 @@ async def test_get_access_token(client):
 
 
 @pytest.mark.asyncio
-async def test_unauthorized(client):
+async def test_unauthorized_get_retry(client):
     # pylint: disable=W0212
     token = client._access_token
     # pylint: disable=W0212
     client._set_access_token(access_token="invalid")
-    with pytest.raises(exceptions.UnauthorizedError) as ex_info:
-        await client.get_user()
-        print(ex_info)
+    data = await client.get_user()
+    assert data["id"] == MOCK_USER_RESPONSE["id"]
     # pylint: disable=W0212
     client._set_access_token(access_token=token)
 

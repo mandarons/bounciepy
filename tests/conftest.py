@@ -29,6 +29,9 @@ def client(event_loop):
         mock_aioresponse.get(
             re.compile(f"{REST_API_BASE_URL}/*"), callback=mock_response
         )
+        mock_aioresponse.get(
+            re.compile(f"{REST_API_BASE_URL}/*"), callback=mock_response
+        )
         client = AsyncRESTAPIClient(
             client_id=MOCK_CLIENT_ID,
             client_secret=MOCK_CLIENT_SECRET,
