@@ -36,21 +36,20 @@ async def mock_response(url, **kwargs):
                         return CallbackResult(
                             status=200, payload=const.MOCK_VEHICLES_RESPONSE
                         )
-                    if "/user" in url_str:
+                    elif "/user" in url_str:
                         return CallbackResult(
                             status=200, payload=const.MOCK_USER_RESPONSE
                         )
-                    if "/trips" in url_str:
+                    elif "/trips" in url_str:
                         return CallbackResult(
                             status=200, payload=const.MOCK_TRIPS_RESPONSE_IMEI
                         )
+                    else:
+                        return CallbackResult(status=404)
                 else:
-                    # TODO throw invalid auth error
-                    pass
+                    return CallbackResult(status=401)
             else:
-                # TODO throw missing auth error
-                pass
-        else:
-            # TODO throw missing header error
-            pass
+                return CallbackResult(
+                    status=400, payload={"errors": "This was a bad request because..."}
+                )
     return None

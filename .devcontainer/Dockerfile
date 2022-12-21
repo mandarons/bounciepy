@@ -4,7 +4,6 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Uninstall pre-installed formatting and linting tools
 # They would conflict with our pinned versions
-RUN pipx uninstall black
 RUN pipx uninstall flake8
 RUN pipx uninstall pydocstyle
 RUN pipx uninstall pycodestyle
@@ -12,27 +11,17 @@ RUN pipx uninstall mypy
 RUN pipx uninstall pylint
 
 RUN \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && apt-get update \
+    apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    # Additional library needed by some tests and accordingly by VScode Tests Discovery
-    # bluez \
-    # libudev-dev \
-    # libavformat-dev \
-    # libavcodec-dev \
-    # libavdevice-dev \
-    # libavutil-dev \
-    # libswscale-dev \
-    # libswresample-dev \
-    # libavfilter-dev \
-    # libpcap-dev \
-    # libturbojpeg0 \
-    # libyaml-dev \
-    # libxml2 \
-    git \
-    # cmake \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    software-properties-common git default-jre && \
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/*
+RUN \
+    wget https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.20.1/allure-commandline-2.20.1.zip && \
+    unzip allure-commandline-2.20.1.zip -d /allure && \
+    rm allure-commandline-2.20.1.zip
+
+ENV PATH "/allure/allure-2.20.1/bin:${PATH}"
 
 WORKDIR /usr/src
 
@@ -41,6 +30,3 @@ WORKDIR /workspaces
 # Install Python dependencies from requirements
 COPY requirements*.txt ./
 RUN pip3 install -r requirements-test.txt --use-deprecated=legacy-resolver
-
-# Set the default shell to bash instead of sh
-ENV SHELL /bin/bash

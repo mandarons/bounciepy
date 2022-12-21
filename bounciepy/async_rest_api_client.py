@@ -8,9 +8,6 @@ from bounciepy.const import (
     API_DEFAULT_TIMEOUT_SECONDS,
 )
 from bounciepy.exceptions import (
-    InternalError,
-    NotFoundError,
-    ForbiddenError,
     BadRequestError,
     UnauthorizedError,
 )
@@ -58,17 +55,11 @@ class AsyncRESTAPIClient:
         if response.status in (200, 201):
             data = await response.json()
         elif response.status == 400:
-            raise BadRequestError(response.json()["errors"])
+            data = await response.json()
+            raise BadRequestError(data["errors"])
         elif response.status == 401:
             self._access_token_valid = False
             raise UnauthorizedError("Error: Invalid or expired access token.")
-        elif response.status == 403:
-            data = response.json()
-            raise ForbiddenError(f"{data['error']} - {data['error_description']}")
-        elif response.status == 404:
-            raise NotFoundError("Error: resource not found.")
-        else:
-            raise InternalError(response.text())
         return data
 
     async def _get_session(self):
