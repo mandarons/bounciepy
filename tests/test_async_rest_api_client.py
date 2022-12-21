@@ -1,23 +1,10 @@
 import pytest
-from bounciepy import AsyncRESTAPIClient
+from bounciepy import exceptions
 from tests.const import (
     MOCK_ACCESS_TOKEN,
-    MOCK_CLIENT_ID,
-    MOCK_CLIENT_SECRET,
-    MOCK_REDIRECT_URI,
-    MOCK_AUTH_CODE,
     MOCK_USER_RESPONSE,
     MOCK_VEHICLES_RESPONSE,
 )
-
-
-def get_client():
-    return AsyncRESTAPIClient(
-        client_id=MOCK_CLIENT_ID,
-        client_secret=MOCK_CLIENT_SECRET,
-        redirect_url=MOCK_REDIRECT_URI,
-        auth_code=MOCK_AUTH_CODE,
-    )
 
 
 @pytest.mark.asyncio
@@ -25,6 +12,26 @@ async def test_get_access_token(client):
     data = await client.get_access_token()
     assert data is True
     assert client.access_token == MOCK_ACCESS_TOKEN
+
+
+@pytest.mark.asyncio
+async def test_unauthorized(client):
+    # pylint: disable=W0212
+    token = client._access_token
+    # pylint: disable=W0212
+    client._set_access_token(access_token="invalid")
+    with pytest.raises(exceptions.UnauthorizedError) as ex_info:
+        await client.get_user()
+        print(ex_info)
+    # pylint: disable=W0212
+    client._set_access_token(access_token=token)
+
+
+@pytest.mark.asyncio
+async def test_400_error(client):
+    with pytest.raises(exceptions.BadRequestError) as ex_info:
+        await client.get_user()
+    print(ex_info)
 
 
 @pytest.mark.asyncio
