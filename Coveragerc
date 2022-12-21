@@ -1,6 +1,0 @@
-[run]
- include =
-    bounciepy/*
- [report]
- include =
-    bounciepy/*
