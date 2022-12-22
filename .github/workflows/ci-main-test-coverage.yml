@@ -59,7 +59,7 @@ jobs:
           pip install -r requirements-test.txt
       - name: Test with pytest
         run: |
-          pylint bounciepy/ tests/ && pytest
+          pylint bounciepy/ tests/ && pytest && rm htmlcov/.gitignore
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v2
         if: ${{ success() }}

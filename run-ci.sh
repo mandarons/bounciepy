@@ -25,8 +25,6 @@ echo "Linting ..." &&
     pytest &&
     echo "Reporting ..." &&
     allure generate --clean
-    echo "Deleting htmlcov/.gitignore ..." &&
-    deleteFile htmlcov/.gitignore
 if [[ ! -n $1 ]]; then
     echo "Building the distribution ..." &&
         python setup.py sdist bdist_wheel
