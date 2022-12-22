@@ -59,12 +59,3 @@ async def test_get_vehicles_by_vin(client):
     assert True is await client.get_access_token()
     data = await client.get_vehicle_by_vin(vin=MOCK_VEHICLES_RESPONSE[0]["vin"])
     assert len(data) > 0
-
-
-@pytest.mark.asyncio
-async def test_search_for_trips(client):
-    assert True is await client.get_access_token()
-    data = await client.search_for_trips(
-        imei=MOCK_VEHICLES_RESPONSE[0]["imei"], gps_format="polyline"
-    )
-    assert len(data) > 0

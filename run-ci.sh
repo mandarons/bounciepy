@@ -7,6 +7,7 @@ deleteFile() {
 }
 echo "Cleaning ..."
 deleteDir .pytest_cache
+deleteDir .mypy_cache
 deleteDir allure-results
 deleteDir allure-report
 deleteDir htmlcov
@@ -18,10 +19,14 @@ deleteFile coverage.xml
 
 echo "Linting ..." &&
     pylint bounciepy/ tests/ &&
+    echo "Type checking ..." &&
+    mypy bounciepy/ &&
     echo "Testing ..." &&
     pytest &&
     echo "Reporting ..." &&
     allure generate --clean
+    echo "Deleting htmlcov/.gitignore ..." &&
+    deleteFile htmlcov/.gitignore
 if [[ ! -n $1 ]]; then
     echo "Building the distribution ..." &&
         python setup.py sdist bdist_wheel
