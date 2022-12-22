@@ -84,7 +84,7 @@ class AsyncRESTAPIClient:
             url=AUTH_TOKEN_URL,
             data=data,
         ) as response:
-            response_data = await self._handle_response(response=response)
+            response_data = await self._handle_response(response)
             if not response_data:
                 return False
             if isinstance(response_data, dict):
@@ -99,7 +99,7 @@ class AsyncRESTAPIClient:
                 response = await current_session.get(
                     url=url, headers=self._headers, allow_redirects=True, **kwargs
                 )
-                data = await self._handle_response(response=response)
+                data = await self._handle_response(response)
                 count = 2
             except UnauthorizedError:
                 if await self.get_access_token():
