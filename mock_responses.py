@@ -1,6 +1,7 @@
 from aioresponses import CallbackResult
-from tests import const
+
 from bounciepy.const import AUTH_TOKEN_URL, REST_API_BASE_URL
+from tests import const
 
 
 async def mock_response(url, **kwargs):

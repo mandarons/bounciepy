@@ -25,9 +25,7 @@
     "python.linting.mypyPath": "/usr/local/bin/mypy",
     "python.linting.pylintPath": "/usr/local/bin/pylint",
     "python.formatting.provider": "black",
-    "python.testing.pytestArgs": [
-      "--no-cov"
-    ],
+    "python.testing.pytestArgs": ["--no-cov"],
     "editor.formatOnPaste": false,
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
