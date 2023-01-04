@@ -23,7 +23,7 @@ jobs:
           pip install setuptools wheel twine
       - name: Build and publish
         env:
-        # TODO setup PYPI username and password for repo on github.com
+          # TODO setup PYPI username and password for repo on github.com
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |

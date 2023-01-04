@@ -1,16 +1,14 @@
-from aiohttp import ClientSession, ClientTimeout, ClientResponse
 from typing import Optional, Union
 
+from aiohttp import ClientResponse, ClientSession, ClientTimeout
+
 from bounciepy.const import (
-    REST_API_BASE_URL,
-    AUTH_TOKEN_URL,
-    AUTH_GRANT_TYPE,
     API_DEFAULT_TIMEOUT_SECONDS,
+    AUTH_GRANT_TYPE,
+    AUTH_TOKEN_URL,
+    REST_API_BASE_URL,
 )
-from bounciepy.exceptions import (
-    BadRequestError,
-    UnauthorizedError,
-)
+from bounciepy.exceptions import BadRequestError, UnauthorizedError
 
 
 class AsyncRESTAPIClient:

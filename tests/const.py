@@ -1,3 +1,4 @@
+"""Tests fake constants."""
 MOCK_CLIENT_ID = "mock-client-id"
 MOCK_CLIENT_SECRET = "mock-client-secret"
 MOCK_AUTH_CODE = "mock-auth-code"

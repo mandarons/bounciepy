@@ -1,9 +1,12 @@
+"""Fake responses module."""
 from aioresponses import CallbackResult
+
+from bounciepy.const import AUTH_GRANT_TYPE, AUTH_TOKEN_URL, REST_API_BASE_URL
 from tests import const
-from bounciepy.const import AUTH_TOKEN_URL, REST_API_BASE_URL, AUTH_GRANT_TYPE
 
 
 async def mock_response(url, **kwargs):
+    """Fake responses builder."""
     url_str = str(url)
     if AUTH_TOKEN_URL in url_str:
         if "data" in kwargs:
