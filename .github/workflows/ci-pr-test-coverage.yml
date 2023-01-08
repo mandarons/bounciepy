@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 jobs:
   cache-requirements-install:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
           pip install -r requirements-test.txt
   test:
     needs: cache-requirements-install
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
