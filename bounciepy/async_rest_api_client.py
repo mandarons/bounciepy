@@ -137,3 +137,13 @@ class AsyncRESTAPIClient:
         if isinstance(vehicle_data, list):
             return vehicle_data[0]
         return None
+
+    async def get_trips(self, imei: str, gps_format: str="geojson") -> Optional[list]:
+        trip_data = await self.http_get(
+            f"{REST_API_BASE_URL}/trips",
+            params={"imei": imei,
+                    "gps-format": gps_format},
+        )
+        if trip_data and isinstance(trip_data, list):
+            return trip_data
+        return None

@@ -124,3 +124,21 @@ async def test_get_vehicles_by_vin_none(client, monkeypatch):
     )
     data = await client.get_vehicle_by_vin(vin=MOCK_VEHICLES_RESPONSE[0]["vin"])
     assert data is None
+
+@pytest.mark.asyncio
+async def test_get_trips(client):
+    """Test get trips returns success."""
+    assert True is await client.get_access_token()
+    data = await client.get_trips(imei=MOCK_VEHICLES_RESPONSE[0]["imei"],gps_format="geojson")
+    assert len(data) > 0
+
+
+@pytest.mark.asyncio
+async def test_get_trips_none(client, monkeypatch):
+    """Test get trips returns None."""
+    monkeypatch.setattr(
+        "bounciepy.async_rest_api_client.AsyncRESTAPIClient._handle_response",
+        mock_handle_response,
+    )
+    data = await client.get_trips(imei=MOCK_VEHICLES_RESPONSE[0]["imei"],gps_format="geojson")
+    assert data is None
