@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 REPO_URL = "https://github.com/mandarons/bounciepy"
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 with open("README.md") as fh:
     long_description = fh.read()
