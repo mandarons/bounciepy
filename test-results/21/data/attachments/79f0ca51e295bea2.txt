@@ -1,0 +1,1 @@
+<ExceptionInfo BadRequestError('This was a bad request because...') tblen=4>
